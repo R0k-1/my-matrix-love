@@ -1,0 +1,177 @@
+@font-face {
+    font-family: 'Marske';
+    src: url('Marske.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+/* Базовые стили */
+* {
+    margin: 0;
+    padding: 0;
+    color: #f88ea8;
+    text-align: center;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+}
+
+body {
+    background: #232323;
+    font-family: 'Marske', 'Dancing Script', 'Courier New', monospace;
+}
+
+/* Общий стиль шрифта */
+button,
+.question-box,
+.text {
+    font-family: 'Marske', 'Dancing Script', 'Courier New', monospace;
+}
+
+.hidden {
+    display: none;
+}
+
+.container {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20%;
+}
+
+button {
+    position: relative;
+    width: 150px;
+    height: 60px;
+    background: #330d17;
+    color: #f88ea8;
+    text-transform: uppercase;
+    font-size: 20px;
+    border: 2px solid #790604;
+    border-radius: 8px;
+    cursor: pointer;
+    overflow: hidden;
+    font-weight: bold;
+    box-shadow: 0 0 10px #da6765;
+}
+
+.button-group {
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    margin-top: 10px;
+}
+
+button:hover {
+    background: #ff3366;
+    color: #1a1a1a;
+    box-shadow: 0 0 20px #790604;
+}
+
+button span {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: none;
+}
+   
+button:hover span {
+    width: 90px;
+    height: 25px;
+}
+
+/* Стиль для блока вопросов */
+.question-box {
+    position: relative;
+    width: 550px; /* увеличено для вместимости текста */
+    background: #330d17;
+    padding: 20px;
+    border-radius: 10px;
+    margin-top: 20px;
+    font-size: 23px;
+    color: #923f3e;
+    text-align: center;
+    border: 2px solid #790604;
+    box-shadow: 0 0 10px #790604;
+}
+
+.question-box button {
+    margin: 10px;
+}
+
+/* Кнопки "Да" и "Нет" в ряд */
+.question-box div {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+/* Затемняющий слой */
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.3);
+    z-index: 1;
+}
+
+/* Канвас для "Матрицы" */
+#matrixCanvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+}
+
+/* Рамка для анимации текста */
+.frame {
+    position: fixed;
+    top: 100px;
+    left: 100px;
+    right: 100px;
+    bottom: 100px;
+    border: 3px solid rgba(255, 77, 109, 0.7);
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+}
+
+.text {
+    font-size: 22px;
+    white-space: pre-line;
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+    line-height: 1.4;
+}
+
+/* Кнопка перезапуска */
+#restartButton {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    background: #330d17;
+    color: #f88ea8;
+    border: 2px solid #790604;
+    border-radius: 8px;
+    font-size: 16px;
+    padding: 10px 20px;
+    cursor: pointer;
+    box-shadow: 0 0 10px #da6765;
+    z-index: 999;
+    transition: all 0.3s ease;
+}
+
+#restartButton:hover {
+    background: #ff3366;
+    color: #1a1a1a;
+    box-shadow: 0 0 20px #790604;
+}

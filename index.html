@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Для тебя)</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet">
+
+</head>
+<body>
+    <canvas id="matrixCanvas"></canvas> <!-- Фон с падающими "♥" -->
+
+    <div class="container">
+        <button id="startButton" class="matrix-button"><span></span><p>Start</p></button>
+        <div id="questionBlock" class="question-box hidden">
+            <p id="questionText"></p>
+            <div class="button-group">
+                <button id="option1">Да</button>
+                <button id="option2">Нет</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="frame" class="frame">
+        <pre id="text" class="text"></pre>
+    </div>
+
+    <script>
+        const canvas = document.getElementById("matrixCanvas");
+        const ctx = canvas.getContext("2d");
+
+        // Размер канваса на полный экран
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        // Китайские символы для эффекта матрицы
+        const symbols = "♥".split("");
+
+        // Размер шрифта
+        const fontSize = 15;
+        const columns = canvas.width / fontSize; // Количество колонок по ширине
+
+        // Массив для хранения позиций символов
+        const drops = [];
+
+        // Заполняем массив начальными значениями
+        for (let x = 0; x < columns; x++) {
+            drops[x] = 1;
+        }
+
+        // Функция рисования символов
+        function draw() {
+            ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = "#ff3366";
+            ctx.font = `${fontSize}px arial`;
+
+            for (let i = 0; i < drops.length; i++) {
+                const text = symbols[Math.floor(Math.random() * symbols.length)];
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+
+                drops[i]++;
+            }
+        }
+
+        // Запускаем анимацию
+        setInterval(draw, 35);
+
+        const startButton = document.getElementById("startButton");
+        const questionBlock = document.getElementById("questionBlock");
+        const questionText = document.getElementById("questionText");
+        const option1 = document.getElementById("option1");
+        const option2 = document.getElementById("option2");
+
+        // Список вопросов
+        const questions = {
+            start: { text: "Ты бы снова пережила все наши ссоры, если бы знала, что в конце будет наш смех?", yes: "1", no: "2" },
+            1: { text: "И ты бы согласилась снова пройти весь путь с самого начала — даже если бы знала, что будет и хорошее, и не очень?", yes: "3", no: "4" },
+            2: { text: "Ты бы снова захотела то наше свидание, где всё было просто идеально?", yes: "5", no: "6" },
+            3: { text: "Ты всё ещё чувствуешь бабочек в животе, когда я просто держу тебя за руку?", yes: "final", no: "final" },
+            4: { text: "Есть ли у нас момент, который ты бы хотела пережить заново — потому что он был слишком идеальным, чтобы случиться всего раз?", yes: "final", no: "7" },
+            5: { text: "Ты бы снова провела тот день, когда мы впервые поняли, что это любовь?", yes: "final", no: "final" },
+            6: { text: "Ты бы захотела стареть рядом со мной, даже если я стану ворчливым старичком с пледом на коленях?", yes: "final", no: "8" },
+            7: { text: "Ты когда-нибудь ловила «бабочек» от моего поцелуя, даже спустя годы?", yes: "final", no: "final" },
+            8: { text: "Ты всё ещё считаешь меня своим «домом»?", yes: "final", no: "final" },
+
+            final: { text: "ААА, теперь КУСЬ меня", yes: null, no: null }
+        };
+
+        let currentQuestion = "start";
+
+        // Запуск опроса
+        startButton.addEventListener("click", function() {
+            startButton.style.display = "none"; 
+            questionBlock.classList.remove("hidden");
+            showQuestion(currentQuestion);
+        });
+
+        // Функция показа вопроса
+        function showQuestion(questionKey) {
+            currentQuestion = questionKey;
+            const questionData = questions[questionKey];
+            questionText.textContent = questionData.text;
+
+            if (questionData.yes === null && questionData.no === null) {
+                option1.style.display = "none";
+                option2.style.display = "none";
+                setTimeout(() => {
+                    questionBlock.classList.add("hidden");
+                    showFrame();
+                }, 3000); // Показываем анимацию через 3 секунд после последнего вопроса
+            } else {
+                option1.onclick = () => showQuestion(questionData.yes);
+                option2.onclick = () => showQuestion(questionData.no);
+            }
+        }
+        const frames = [
+            "________00000000000000______00000000000000________\n______000000000000000000__0000000000000000000_____\n____000000000000000000000000000000________00000___\n___0000000000000000000000000000000__________0000__\n__0000000000000000000000000000000000__________000_\n__00000000000000000000000000000000000000_____0000_\n_00000000000000000000000000000000000000000___00000\n_000000000000000000000000000000000000000000_000000\n_000000000000000000000000000000000000000000000000_\n_000000000000000000000000000000000000000000000000_\n__00000000000000000000000000000000000000000000000_\n___000000000000000000000000000000000000000000000__\n_____00000000000000000000000000000000000000000____\n_______0000000000000000000000000000000000000______\n__________0000000000000000000000000000000_________\n_____________00000000000000000000000000___________\n_______________00000000000000000000______________\n__________________000000000000000________________\n____________________0000000000___________________\n______________________000000_____________________\n_______________________0000______________________\n________________________00_______________________",
+            "⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜\n⬜⬜⬜⬜⬛⬜⬜⬜⬛⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬛⬜⬜⬜⬛\n⬜⬜⬜⬜⬛⬜⬜⬜⬛⬜⬛⬜⬜⬜⬛⬜⬜⬜⬛⬜⬛⬜⬜⬜⬛\n⬜⬜⬜⬜⬛⬜⬜⬜⬛⬜⬜⬛⬜⬛⬜⬛⬜⬛⬜⬜⬛⬜⬜⬜⬛\n⬜⬜⬜⬜⬜⬛⬛⬛⬜⬜⬜⬜⬛⬜⬜⬜⬛⬜⬜⬜⬜⬛⬛⬛⬜\n⬜⬜⬜⬜⬜⬜⬜⬜🟨🟨🟨🟨🟨🟨🟨🟨🟨🟨⬜⬜⬜⬜⬜⬜⬜\n⬜⬜⬜⬜⬜⬜🟨🟨🟨🟨🟨🟨🟨🟨🟨🟨🟨🟨🟨🟨⬜⬜⬜⬜⬜\n⬜⬜⬜⬜⬜🟨🟨🟨🟨🟨🟨🟨🟨🟨🟨🟨🟨🟨🟨🟨🟨🟨⬜⬜⬜\n⬜⬜⬜⬜🟨🟨🟨🟨🟨🟨🟨🟨🟨🟨🟨🟨🟨🟨🟨🟨🟨🟨⬜⬜⬜\n⬜⬜⬜⬜🟨🟨🟨🟨⬛⬛⬛⬛⬛🟨🟨🟨🟨🟨🟨🟨🟨🟨🟨⬜⬜\n⬜⬜⬜🟨🟨🟨🟨⬛⬛🌫️🌫️🌫️🌫️⬛🟨🟨🟨🟨⬛⬛⬛⬛🟨⬜⬜\n⬜⬜🟨🟨🟨🟨⬛⬛⬛⬛🌫️🌫️🌫️⬛⬛🟨⬛⬛🌫️🌫️🌫️🌫️⬛🟨⬜\n⬜⬜🟨🟨🟨⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛🌫️🌫️⬜⬛🟨⬜\n⬜⬜🟨🟨🟨⬛⬛⬛⬛⬛⬛⬛⬛⬛🟨⬛⬛⬛⬛⬛⬛⬛⬛⬛⬜\n⬜⬜🟨🟨🟨⬛⬛⬛⬛⬛⬛⬛⬛⬛🟨⬛⬛⬛⬛⬛⬛⬛⬛⬛⬜\n⬜⬜🟧🟧🟧⬛⬛⬛⬛⬛⬛⬛⬛🟨🟨⬛⬛⬛⬛⬛⬛⬛⬛⬜⬜\n⬜⬜🟧🟧🟧🟧🟧⬛⬛⬛⬛🟨🟨🟨🟨🟨⬛⬛⬛⬛⬛⬛⬛⬜⬜\n⬜⬜🟧🟧🟧🟧🟧🟧🟧🟨🟨🟨⬛⬛⬛🟨🟧⬛⬛⬛⬛⬛⬜⬜⬜\n⬜⬜⬜🟧🟧🟧🟧🟧🟧🟧🟨🟨🟨🟨🟨🟧🟧🟧🟧🟧🟧🟧⬜⬜⬜\n⬜⬜⬜🟧🟧🟧🟧🟧🟧🟧🟧🟨🟨🟨🟨🟧🟧🟧🟧🟧🟧🟧⬜⬜⬜\n⬜⬜⬜⬜🟧🟧🟧🟧🟧🟧🟧🟨🟨🟨🟨🟧🟧🟧🟧🟧🟧⬜⬜⬜⬜\n⬜⬜⬜⬜⬜🟧🟧🟧🟧🟧🟧🟨🟨🟨🟨🟧🟧🟧🟧🟧⬜⬜⬜⬜⬜\n⬜⬜⬜⬜⬜⬜🟧🟧🟧🟧🟧🟨🟨🟨🟨🟧🟧🟧🟧⬜⬜⬜⬜⬜⬜\n⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜\n⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜",
+            "⠀⠀⠀⠀⣀⡤⢤⣄⠀⣠⡤⣤⡀⠀⠀⠀\n⠀⠀⢀⣴⢫⠞⠛⠾⠺⠟⠛⢦⢻⣆⠀⠀\n⠀⠀⣼⢇⣻⡀⠀⠀⠀⠀⠀⠀⢸⡇⢿⣆⠀\n⠀⢸⣯⢦⣽⣷⣄⡀⠀⢀⣴⣿⣳⣬⣿⠀\n⢠⡞⢩⣿⠋⠙⠳⣽⢾⣯⠛⠛⢹⣯⠘⣷\n⠀⠈⠛⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⠋⠁⠀⠀",
+                ];
+
+        function showFrame() {
+            const frame = document.getElementById("frame");
+            const textElement = document.getElementById("text");
+            frame.style.opacity = "1";
+            
+            let index = 0;
+            function showNextFrame() {
+                if (index < frames.length) {
+                    textElement.style.opacity = "0";
+                    setTimeout(() => {
+                        textElement.textContent = frames[index];
+                        textElement.style.opacity = "1";
+                        if (index === frames.length - 1) {
+                            animateHearts();
+                        }
+                        index++;
+                        setTimeout(showNextFrame, 2000);
+                    }, 1000);
+                }
+            }
+            setTimeout(showNextFrame, 1000);
+        }
+    </script>
+        <button id="restartButton">Перезапустить</button>
+        <script>
+            document.getElementById("restartButton").addEventListener("click", () => {
+                window.location.reload();
+            });
+            </script>
+</body>
+</html>
